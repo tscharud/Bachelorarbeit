@@ -1,0 +1,103 @@
+%Fit an Strahlradien aus Scans 002-021 (unkorrigiert)
+%Einlesen der Daten für 1D-Scans 002-021
+T=readtable("C:\Users\rudit\Desktop\Uni\Bachelor\Bachelor-Arbeit\Scan_Auswertung\Fit-Parameter.txt");
+T=table2array(T);
+s=reshape(sqrt(2)*T(:,8),[1 20]);
+sneg=reshape(sqrt(2)*T(:,9),[1 20]);
+sneg=s-sneg;
+spos=reshape(sqrt(2)*T(:,10),[1 20]);
+spos=spos-s;
+z=[320 0 0 40 80 120 120 160 200 240 280 320 320 220 240 260 280 300 320 320];
+z=z/40;
+%zneg=[0 0 0 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0 0 0.025 0.025 0.025 0.025 0.025 0 0];
+%errorbar(z,s,sneg,spos,'.b');
+%hold on;
+k=sort(z);
+%multiple values for z=0
+x=mean(s(2:3));
+xneg=mean(sneg(2:3));
+xpos=mean(spos(2:3));
+%multiple values for z=120
+x1=mean([s(6:7)]);
+x1neg=mean([sneg(6:7)]);
+x1pos=mean([spos(6:7)]);
+%multiple values for z=240
+x2=mean([s(10) s(15)]);
+x2neg=mean([sneg(10) sneg(15)]);
+x2pos=mean([spos(10) spos(15)]);
+%multiple values for z=280
+x3=mean([s(11) s(17)]);
+x3neg=mean([sneg(11) sneg(17)]);
+x3pos=mean([spos(11) spos(17)]);
+%multiple values for z=320
+x4=mean([s(1) s(12:13) s(19:20)]);
+x4neg=mean([sneg(1) sneg(12:13) sneg(19:20)]);
+x4pos=mean([spos(1) spos(12:13) spos(19:20)]);
+s2=[x s(4:5) x1 s(8:9) s(14) x2 s(16) x3 s(18) x4];
+s2neg=[xneg sneg(4:5) x1neg sneg(8:9) sneg(14) x2neg sneg(16) x3neg sneg(18) x4neg];
+s2pos=[xpos spos(4:5) x1pos spos(8:9) spos(14) x2pos spos(16) x3pos spos(18) x4pos];
+z2=[k(2:5) k(7:10) k(12:13) k(15:16)];
+errorbar(z2,s2,s2neg,s2pos,'ro');
+hold on;
+xlim([-0.25 9.0]);
+z2=reshape(z2,[length(z2) 1]);
+s2=reshape(s2,[length(s2) 1]);
+eq=fittype('a1*sqrt(1+((x-b1)/c1)^2)','dependent',{'y'},'independent',{'x'},'coefficients',{'a1','b1','c1'});
+g=fit(z2,s2,eq);
+C=coeffvalues(g);
+Con=confint(g);
+a1=C(1);
+aneg=a1-Con(1,1);
+apos=Con(2,1)-a1;
+b1=C(2);
+bneg=b1-Con(1,2);
+bpos=Con(2,2)-b1;
+c1=C(3);
+x2=(0:0.01:8.75);
+f=a1*sqrt(1+((x2-b1)/c1).^2);
+plot(x2,f);
+errorbar(b1,a1,aneg,apos,bneg,bpos,'r*');
+hold off;
+title("1/e^2-Strahlradien aus Scans der 50\mum-Apertur mit Fit");
+xlabel("Entfernung vom neg. Limit [mm]");
+ylabel("Strahlradius in \mum");
+legend("50\mum-Apertur","Fit","Fokus(aus Fit) mit 95%-Konfidenzintervallen","location","northeast");
+saveas(gcf,"C:\Users\rudit\Desktop\Uni\Bachelor\Bachelor-Arbeit\Tätigkeitsbericht\Bilder\50um_scans_fit.png","png");
+
+%Fit mit 50um-1d-consecutive-Scan (Scan 025)
+clear;
+W=readtable("C:\Users\rudit\Desktop\Uni\Bachelor\Bachelor-Arbeit\Scan_Auswertung\Fit-Parameter_025.txt");
+W=table2array(W);
+l=reshape(W(:,1),[1 16]);
+l=l/40000;
+s3=reshape(sqrt(2)*W(:,8), [1 16]);
+s3neg=reshape(sqrt(2)*W(:,9),[1 16]);
+s3neg=s3-s3neg;
+s3pos=reshape(sqrt(2)*W(:,10),[1 16]);
+s3pos=s3pos-s3;
+%zneg2=[0.005 0.005 0.005 0.005 0.005 0.005 0.005 0.005 0.005 0.005 0.005 0.005 0.005 0.005 0.005 0.005 ];
+plot(l,s3,"r*");
+hold on;
+l=reshape(l,[length(l) 1]);
+s3=reshape(s3,[length(s3) 1]);
+eq=fittype('a1*sqrt(1+((x-b1)/c1)^2)','dependent',{'y'},'independent',{'x'},'coefficients',{'a1','b1','c1'});
+g2=fit(l,s3,eq);
+C=coeffvalues(g2);
+Con=confint(g2);
+a1=C(1);
+aneg=a1-Con(1,1);
+apos=Con(2,1)-a1;
+b1=C(2);
+bneg=b1-Con(1,2);
+bpos=Con(2,2)-b1;
+c1=C(3);
+x2=(0:0.01:8.75);
+f=a1*sqrt(1+((x2-b1)/c1).^2);
+plot(x2,f);
+%errorbar(b1,a1,aneg,apos,bneg,bpos,'r*');
+hold off;
+title("1/e^2-Strahlradien aus Scans der 50\mum-Apertur mit Fit");
+xlabel("Entfernung vom neg. Limit [mm]");
+ylabel("Strahlradius in \mum");
+legend("50\mum-Apertur","Fit","location","northwest");
+saveas(gcf,"C:\Users\rudit\Desktop\Uni\Bachelor\Bachelor-Arbeit\Tätigkeitsbericht\Bilder\50um_scan_025_fit.png","png");
