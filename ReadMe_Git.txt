@@ -11,6 +11,8 @@ Apertur_Toroid.m: Abbildung des Apertureinflusses auf die Breite einer Gauß-Fun
 
 Apertur_influence.m: Diagramm zur Darstellung des Apertureinflusses auf die Breite einer Gauß-Funktion durch Faltung mit einer Funktion zur Beschreibung der Apertur
 
+Check_std_integrals.m: Programm zur Berechnung der Standardabweichung der Integrale der TOF-Dateien
+
 Errorplot.m: Plot aller Diagramme mit Fehlerbalken, für korrigierte und unkorrigierte Strahlradien
 
 Fit_Radius_50um_uncorrected.m: Fit an Scans 002-021 für den Tätigkeitsbericht
@@ -40,5 +42,3 @@ Versuch_Fit_Radius.m: Fit an die ermittelten, korrigierten Strahlradien zur Best
 h5_test.m: Plotten der TOF-Traces aus den hsf5-Dateien und Bildung der Integrale über die Xenon-Peaks
 
 numeric_int_1D.m: numerische Integration über 1D-Gaußprofil (Gauß-Profil wird bei 1/e^2-Radius abgeschnitten)
-
-std_integrals.m: Programm zur Berechnung der Standardabweichung der Integrale der TOF-Dateien
